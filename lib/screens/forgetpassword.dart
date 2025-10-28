@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sakt/screens/forgetpassword.dart';
 import 'package:sakt/widgets/bezierContainer.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class Forgetpassword extends StatelessWidget {
+  const Forgetpassword({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class Login extends StatelessWidget {
               children: [
                 Image.asset('assets/logo.png', width: 350),
                 const Text(
-                  'LOGIN',
+                  'LUPA KATA LALUAN',
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 Text(
@@ -34,13 +33,7 @@ class Login extends StatelessWidget {
                       TextFormField(
                         decoration: const InputDecoration(labelText: 'Emel'),
                       ),
-                      SizedBox(height: 20),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Kata Laluan',
-                        ),
-                      ),
+
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
@@ -59,12 +52,7 @@ class Login extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const Forgetpassword(),
-                                ),
-                              );
+                              // Handle forgot password action
                             },
                             child: const Text('Lupa Kata Laluan?'),
                           ),
