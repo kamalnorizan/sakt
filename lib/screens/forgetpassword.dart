@@ -52,9 +52,9 @@ class Forgetpassword extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: () {
-                              // Handle forgot password action
+                              Navigator.pop(context);
                             },
-                            child: const Text('Lupa Kata Laluan?'),
+                            child: const Text('Log Masuk'),
                           ),
                           TextButton(
                             onPressed: () {
