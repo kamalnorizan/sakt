@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:sakt/screens/forgetpassword.dart';
 import 'package:sakt/widgets/bezierContainer.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class Login extends StatefulWidget {
+  Login({super.key});
 
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +24,7 @@ class Login extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset('assets/logo.png', width: 350),
-                const Text(
+                Text(
                   'LOGIN',
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
@@ -43,9 +48,7 @@ class Login extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () {
-                          // Handle login action
-                        },
+                        onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
                           backgroundColor: Colors.deepOrange,
