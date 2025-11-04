@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:sakt/screens/forgetpassword.dart';
 import 'package:sakt/utils/networkApi.dart';
 import 'package:sakt/widgets/bezierContainer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   Login({super.key});
@@ -40,8 +43,27 @@ class _LoginState extends State<Login> {
       body: {'email': email, 'password': password},
     );
 
-    print(response.body); // handle response appropriately
-    Navigator.of(context).pop(); // Close the loading dialog
+    if (!mounted) return;
+    Navigator.of(context).pop();
+
+    var body = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final token = body['data']['access_token'];
+      final name = body['data']['user']['name'];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('access_token', token);
+      await prefs.setString('name', name);
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login Gagal: ${body['message']}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
