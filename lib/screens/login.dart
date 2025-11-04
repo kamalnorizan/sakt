@@ -10,6 +10,24 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  Future<void> _login() async {
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sila isi semua medan'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +56,7 @@ class _LoginState extends State<Login> {
                     children: [
                       TextFormField(
                         decoration: const InputDecoration(labelText: 'Emel'),
+                        controller: emailController,
                       ),
                       SizedBox(height: 20),
                       TextFormField(
@@ -45,10 +64,13 @@ class _LoginState extends State<Login> {
                         decoration: const InputDecoration(
                           labelText: 'Kata Laluan',
                         ),
+                        controller: passwordController,
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _login();
+                        },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
                           backgroundColor: Colors.deepOrange,
