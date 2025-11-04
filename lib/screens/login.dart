@@ -17,6 +17,13 @@ class _LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    emailController.text = 'ziemann.bella@example.org';
+    passwordController.text = 'password';
+  }
+
   Future<void> _login() async {
     final email = emailController.text;
     final password = passwordController.text;
