@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sakt/screens/forgetpassword.dart';
 import 'package:sakt/screens/home.dart';
 import 'package:sakt/screens/login.dart';
+import 'package:sakt/utils/networkApi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -59,10 +60,31 @@ class _MainAppState extends State<MainApp> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('access_token');
     if (token != null && token.isNotEmpty) {
-      setState(() {
-        isLoggedIn = true;
-        isLoading = false;
-      });
+      NetworkApi request = NetworkApi(
+        path: 'profile',
+        timeout: Duration(seconds: 20),
+      );
+
+      final response = await request.post(
+        'profile',
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          isLoggedIn = true;
+          isLoading = false;
+        });
+      } else {
+        await SharedPreferences.getInstance().then((prefs) {
+          prefs.remove('access_token');
+          prefs.remove('name');
+        });
+        setState(() {
+          isLoggedIn = false;
+          isLoading = false;
+        });
+      }
     } else {
       setState(() {
         isLoading = false;
