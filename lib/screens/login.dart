@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sakt/screens/forgetpassword.dart';
+import 'package:sakt/utils/networkApi.dart';
 import 'package:sakt/widgets/bezierContainer.dart';
 
 class Login extends StatefulWidget {
@@ -26,6 +27,21 @@ class _LoginState extends State<Login> {
       );
       return;
     }
+
+    showDialog(
+      context: context,
+      builder: (_) =>
+          const Center(child: CircularProgressIndicator(color: Colors.white)),
+    );
+
+    final request = NetworkApi(path: 'login', timeout: Duration(seconds: 20));
+    final response = await request.post(
+      'login',
+      body: {'email': email, 'password': password},
+    );
+
+    print(response.body); // handle response appropriately
+    Navigator.of(context).pop(); // Close the loading dialog
   }
 
   @override
