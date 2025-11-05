@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:sakt/models/permohonanResponse.dart';
+import 'package:sakt/screens/permohonanDetail.dart';
+import 'package:sakt/utils/networkApi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -9,6 +14,43 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  PermohonanResponse? permohonanResponse;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPermohonan();
+  }
+
+  Future<void> _loadPermohonan() async {
+    // Simulate loading data
+    NetworkApi request = NetworkApi(
+      path: 'permohonan/bydate',
+      timeout: Duration(seconds: 20),
+    );
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('access_token');
+    DateTime now = DateTime.now();
+
+    print(now.toIso8601String().split('T').first);
+    final response = await request.post(
+      'permohonan/bydate',
+      headers: {'Authorization': 'Bearer $token'},
+      body: {'date': now.toIso8601String().split('T').first},
+    );
+
+    var data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        permohonanResponse = PermohonanResponse.fromJson(data['data']);
+      });
+    } else {
+      // Handle error
+      print('Failed to load permohonan data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,220 +85,40 @@ class _HomeState extends State<Home> {
             ),
           ),
           Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
+            child: ListView.builder(
+              itemCount: permohonanResponse?.permohonan?.length ?? 0,
+
+              itemBuilder: (context, index) => ListTile(
+                isThreeLine: true,
+                leading: CircleAvatar(
+                  radius: 30,
+                  child: Icon(Icons.pregnant_woman, size: 40),
                 ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
+                minLeadingWidth: 40,
+                title: Text(
+                  '${permohonanResponse!.permohonan![index].vehicleDetails.noPendaftaran} - ${permohonanResponse!.permohonan![index].user.name}',
+                  overflow: TextOverflow.ellipsis,
                 ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
+                subtitle: Text(
+                  (permohonanResponse!.permohonan![index].lot?.name ??
+                          'Open Parking') +
+                      ' | ${permohonanResponse!.permohonan![index].vehicleDetails.model ?? '-'} | ${permohonanResponse!.permohonan![index].vehicleDetails.warna ?? 'N/A'}',
                 ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-                ListTile(
-                  isThreeLine: true,
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: Icon(Icons.pregnant_woman, size: 40),
-                  ),
-                  minLeadingWidth: 40,
-                  title: Text('WA 4437 - AMYRA ROSLI'),
-                  subtitle: Text('Lot: A-01-05, Aras: 1, Bangunan: A'),
-                  onTap: () {
-                    // Navigate to profile screen
-                  },
-                ),
-              ],
+                trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Permohonandetail(
+                        permohonan: permohonanResponse!.permohonan![index],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
+
           Container(
             alignment: Alignment.center,
             width: double.infinity,

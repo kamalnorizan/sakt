@@ -15,7 +15,7 @@ class PermohonanResponse {
     return PermohonanResponse(
       requestedDate: json['requested_date'],
       totalRecords: json['total_records'],
-      permohonan: (json['permohonan'] as List)
+      permohonan: (json['permohonan_list'] as List)
           .map((e) => Permohonan.fromJson(e))
           .toList(),
     );

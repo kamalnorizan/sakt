@@ -53,4 +53,15 @@ class NetworkApi {
 
     return response;
   }
+
+  Future<dynamic> get(String endpoint, {Map<String, String>? headers}) async {
+    final url = _buildUrl(endpoint);
+    final uri = Uri.parse(url);
+
+    final response = await http
+        .get(uri, headers: _buildHeaders(headers))
+        .timeout(timeout);
+
+    return response;
+  }
 }
