@@ -65,7 +65,9 @@ class Permohonan {
       uuid: json['uuid'],
       noRujukan: json['no_rujukan'],
       user: User.fromJson(json['user']),
-      lot: json['lot'] != null ? Lot.fromJson(json['lot']) : null,
+      lot: json['lot'] != null
+          ? Lot.fromJson(json['lot'])
+          : Lot.fromJson({'id': 0, 'name': 'Open Parking'}),
       vehicleDetails: VehicleDetails.fromJson(json['vehicle_details']),
       parkingDetails: ParkingDetails.fromJson(json['parking_details']),
       period: Period.fromJson(json['period']),

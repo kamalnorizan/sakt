@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:sakt/models/permohonanResponse.dart';
 import 'package:sakt/screens/permohonanDetail.dart';
@@ -15,7 +16,17 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   PermohonanResponse? permohonanResponse;
+  bool _isloadpermohonan = true;
+  List<Permohonan>? filteredPermohonan = [];
+  TextEditingController searchController = TextEditingController();
 
+  List<Map<String, Object>> cardData = [
+    {'title': 'Pas Keselamatan', 'value': 100},
+    {'title': 'Pelekat Kenderaan', 'value': 20},
+    {'title': 'Petak Wanita Hamil', 'value': 60},
+    {'title': 'Petak Tetamu/VIP', 'value': 40},
+    {'title': 'Tinggal Kenderaan', 'value': 10},
+  ];
   @override
   void initState() {
     super.initState();
@@ -24,6 +35,10 @@ class _HomeState extends State<Home> {
 
   Future<void> _loadPermohonan() async {
     // Simulate loading data
+
+    setState(() {
+      _isloadpermohonan = true;
+    });
     NetworkApi request = NetworkApi(
       path: 'permohonan/bydate',
       timeout: Duration(seconds: 20),
@@ -32,7 +47,6 @@ class _HomeState extends State<Home> {
     String? token = prefs.getString('access_token');
     DateTime now = DateTime.now();
 
-    print(now.toIso8601String().split('T').first);
     final response = await request.post(
       'permohonan/bydate',
       headers: {'Authorization': 'Bearer $token'},
@@ -44,11 +58,14 @@ class _HomeState extends State<Home> {
     if (response.statusCode == 200) {
       setState(() {
         permohonanResponse = PermohonanResponse.fromJson(data['data']);
+        filteredPermohonan = permohonanResponse!.permohonan!;
       });
     } else {
       // Handle error
       print('Failed to load permohonan data');
     }
+
+    _isloadpermohonan = false;
   }
 
   @override
@@ -69,66 +86,167 @@ class _HomeState extends State<Home> {
       //     ),
       //   ],
       // ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+      body: Stack(
         children: [
           Container(
-            width: double.infinity,
-            height: 250,
+            padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
+            height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(color: Colors.blue),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
-              child: Text(
-                'Welcome to the Home Screen!',
-                style: TextStyle(fontSize: 24),
+            alignment: Alignment.topCenter,
+            child: CarouselSlider(
+              options: CarouselOptions(
+                height: 160.0,
+                autoPlay: true,
+                enlargeCenterPage: true,
               ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: permohonanResponse?.permohonan?.length ?? 0,
-
-              itemBuilder: (context, index) => ListTile(
-                isThreeLine: true,
-                leading: CircleAvatar(
-                  radius: 30,
-                  child: Icon(Icons.pregnant_woman, size: 40),
-                ),
-                minLeadingWidth: 40,
-                title: Text(
-                  '${permohonanResponse!.permohonan![index].vehicleDetails.noPendaftaran} - ${permohonanResponse!.permohonan![index].user.name}',
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Text(
-                  (permohonanResponse!.permohonan![index].lot?.name ??
-                          'Open Parking') +
-                      ' | ${permohonanResponse!.permohonan![index].vehicleDetails.model ?? '-'} | ${permohonanResponse!.permohonan![index].vehicleDetails.warna ?? 'N/A'}',
-                ),
-                trailing: Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Permohonandetail(
-                        permohonan: permohonanResponse!.permohonan![index],
+              items: cardData.map((i) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                  );
-                },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${i['title']}',
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                          Text(
+                            '${i['value']}',
+                            style: TextStyle(fontSize: 60.0),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+          Positioned(
+            top: 320,
+            left: 0,
+            height: MediaQuery.of(context).size.height - 320,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height - 320,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: 50),
+                  Text(
+                    'Permohonan Hari Ini',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: _isloadpermohonan
+                        ? Center(child: CircularProgressIndicator())
+                        : filteredPermohonan!.isEmpty
+                        ? Text('Tiada Permohonan Aktif untuk Hari ini')
+                        : ListView.builder(
+                            itemCount: filteredPermohonan?.length ?? 0,
+                            padding: EdgeInsets.all(0),
+                            itemBuilder: (context, index) => ListTile(
+                              isThreeLine: true,
+                              leading: CircleAvatar(
+                                radius: 30,
+                                child: Icon(Icons.pregnant_woman, size: 40),
+                              ),
+                              minLeadingWidth: 40,
+                              title: Text(
+                                '${filteredPermohonan![index].vehicleDetails.noPendaftaran} - ${filteredPermohonan![index].user.name}',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                (filteredPermohonan![index].lot?.name ??
+                                        'Open Parking') +
+                                    ' | ${filteredPermohonan![index].vehicleDetails.model ?? '-'} | ${filteredPermohonan![index].vehicleDetails.warna ?? 'N/A'}',
+                              ),
+                              trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Permohonandetail(
+                                      permohonan: permohonanResponse!
+                                          .permohonan![index],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: 290,
+            left: 15,
+            height: 65,
+            child: Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Container(
+                width: MediaQuery.of(context).size.width - 30,
+                height: 65,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                alignment: Alignment.center,
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Carian',
+                    prefixIcon: Icon(Icons.search),
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (value) {
+                    filteredPermohonan = permohonanResponse?.permohonan
+                        ?.where(
+                          (permohonan) =>
+                              permohonan.vehicleDetails.noPendaftaran
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()) ||
+                              permohonan.user.name.toLowerCase().contains(
+                                value.toLowerCase(),
+                              ) ||
+                              permohonan.lot!.name.toLowerCase().contains(
+                                value.toLowerCase(),
+                              ),
+                        )
+                        .toList();
+
+                    setState(() {});
+                  },
+                ),
               ),
             ),
           ),
 
-          Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(5, 5, 5, 30),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.grey.shade300)),
-              color: Colors.blue,
-            ),
-            child: Text('Last Synced: 12-09-2023 10:45 AM'),
-          ),
+          // Container(
+          //   alignment: Alignment.center,
+          //   width: double.infinity,
+          //   padding: const EdgeInsets.fromLTRB(5, 5, 5, 30),
+          //   decoration: BoxDecoration(
+          //     border: Border(top: BorderSide(color: Colors.grey.shade300)),
+          //     color: Colors.blue,
+          //   ),
+          //   child: Text('Last Synced: 12-09-2023 10:45 AM'),
+          // ),
         ],
       ),
     );
