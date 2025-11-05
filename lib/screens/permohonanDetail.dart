@@ -37,6 +37,10 @@ class _PermohonandetailState extends State<Permohonandetail> {
             SizedBox(height: 10),
             Text('Tarikh Mohon: ${widget.permohonan.tarikhMohon}'),
             SizedBox(height: 10),
+            Text('Tarikh Mula: ${widget.permohonan.period.tarikhMula}'),
+            SizedBox(height: 10),
+            Text('Tarikh Tamat: ${widget.permohonan.period.tarikhTamat}'),
+            SizedBox(height: 10),
             Text(
               'Status Permohonan: ${widget.permohonan.statusPermohonanText}',
             ),
