@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sakt/screens/dateselect.dart';
 import 'package:sakt/screens/forgetpassword.dart';
 import 'package:sakt/screens/home.dart';
 import 'package:sakt/screens/login.dart';
@@ -52,6 +53,7 @@ class _MainAppState extends State<MainApp> {
         '/login': (context) => Login(),
         '/forgetpassword': (context) => Forgetpassword(),
         '/home': (context) => Home(),
+        '/dateSelect': (context) => DateSelect(),
       },
     );
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:sakt/screens/forgetpassword.dart';
+import 'package:sakt/screens/web_login.dart';
 import 'package:sakt/utils/networkApi.dart';
 import 'package:sakt/widgets/bezierContainer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -145,6 +146,21 @@ class _LoginState extends State<Login> {
                             child: const Text('Daftar Akaun Baru'),
                           ),
                         ],
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const WebLogin(
+                                loginUrl:
+                                    'https://satuid.treasury.gov.my/gk/login?service=https%3A%2F%2Fsak.treasury.gov.my',
+                                redirectUrlPattern: '/callback',
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text('Log Masuk 1 ID'),
                       ),
                     ],
                   ),
