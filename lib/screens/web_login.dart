@@ -67,7 +67,7 @@ class _WebLoginState extends State<WebLogin> {
 
       if (token != null && token.isNotEmpty) {
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('auth_token', token);
+        await prefs.setString('access_token', token);
 
         if (!mounted) return;
 

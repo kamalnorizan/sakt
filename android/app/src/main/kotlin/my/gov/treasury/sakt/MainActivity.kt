@@ -1,4 +1,4 @@
-package com.example.sakt
+package my.gov.treasury.sakt
 
 import io.flutter.embedding.android.FlutterActivity
 

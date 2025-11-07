@@ -31,6 +31,7 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Center(
             child: Column(
@@ -48,6 +49,7 @@ class _MainAppState extends State<MainApp> {
     }
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: isLoggedIn ? Home() : Login(),
       routes: {
         '/login': (context) => Login(),

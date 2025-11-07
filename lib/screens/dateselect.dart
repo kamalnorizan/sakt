@@ -82,7 +82,7 @@ class _DateSelectState extends State<DateSelect> {
         headers: {'Authorization': 'Bearer $token'},
         body: {'date': formattedDate},
       );
-      print(response.body);
+
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
         final permohonanResponse = PermohonanResponse.fromJson(

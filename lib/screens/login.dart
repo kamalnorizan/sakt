@@ -154,7 +154,7 @@ class _LoginState extends State<Login> {
                             MaterialPageRoute(
                               builder: (_) => const WebLogin(
                                 loginUrl:
-                                    'https://satuid.treasury.gov.my/gk/login?service=https%3A%2F%2Fsak.treasury.gov.my',
+                                    'https://satuid.treasury.gov.my/gk/login?service=https%3A%2F%2Fsak-dev.treasury.gov.my%2Fmobilelogin',
                                 redirectUrlPattern: '/callback',
                               ),
                             ),
